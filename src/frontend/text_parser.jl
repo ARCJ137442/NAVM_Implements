@@ -19,7 +19,7 @@ end
 source_type(::FE_TextParser)::Type = AbstractString
 
 "扩展的解析函数"
-function transform(m::FE_TextParser, source::AbstractString)::Vector{NAIR_CMD_TYPE}
+function transform(m::FE_TextParser, source::AbstractString)::Vector{NAIR_CMD}
     # 如果分多行，按序列再解析
     splits::Vector{AbstractString} = split(source, r"[\r\n]+")
     length(splits) > 1 && return vcat((
@@ -29,8 +29,7 @@ function transform(m::FE_TextParser, source::AbstractString)::Vector{NAIR_CMD_TY
     )...)
     # 尝试解析出Python/Julia风格的注释
     startswith(source, '#') && return [
-        NAVM.form_cmd(
-            :REM, # 注释
+        NAVM.CMD_REM(
             source[2:end] # 井号之后
         )
     ]
@@ -41,15 +40,11 @@ function transform(m::FE_TextParser, source::AbstractString)::Vector{NAIR_CMD_TY
     # 尝试解析出循环步进
     n::Union{Int, Nothing} = tryparse(Int, source)
     isnothing(n) || return [
-        NAVM.form_cmd(
-            :CYC, # 输入循环步进
-            n,
-        )
+        NAVM.CMD_CYC(n) # 循环步进
     ]
     # 最后再尝试解析成Narsese输入
     return [
-        NAVM.form_cmd(
-            :NSE, # 输入Narsese
+        NAVM.CMD_NSE(
             m.parser(string(source)) # 自动解析
         )
     ]

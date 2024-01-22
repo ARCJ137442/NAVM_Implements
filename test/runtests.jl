@@ -1,31 +1,32 @@
-#=
-测试前后端实现
-=#
+# %% Jupyter Notebook | Julia 1.10.0 @ julia | format 2~4
+# % language_info: {"file_extension":".jl","mimetype":"application/julia","name":"julia","version":"1.10.0"}
+# % kernelspec: {"name":"julia-1.10","display_name":"Julia 1.10.0","language":"julia"}
+# % nbformat: 4
+# % nbformat_minor: 2
 
-begin "模块导入"
-    # JuNarsese(Parsers)
-    push!(LOAD_PATH, "../JuNarsese")
-    push!(LOAD_PATH, "../JuNarseseParsers")
+# %% [1] markdown
+# # NAVM.jl 测试
 
-    using JuNarsese
-    using JuNarseseParsers
+# %% [2] markdown
+# ✨Powered by [**IpynbCompile.jl**](https://github.com/ARCJ137442/IpynbCompile.jl)
 
-    # 导入NAVM
-    if !(@isdefined NAVM)
-        push!(LOAD_PATH, "../NAVM")
-        using NAVM
-        import NAVM: source_type, target_type, transform # 添加方法
-        @info "NAVM导入成功！" names(NAVM)
-    end
+# %% [3] markdown
+# ## 模块导入
 
-    using NAVM_Implements
+# %% [4] markdown
+# 模块清单：
+# 
+# - JuNarsese
+# - NAVM
+# - Test
 
-end
+# %% [5] code
+include("#import.jl")
 
-# 启用@debug
-ENV["JULIA_DEBUG"] = "all"
+# %% [6] markdown
+# ## 测试 / 前端
 
-# 前端测试
+# %% [7] code
 fea = FE_TextParser(StringParser_ascii)
 fes = FE_TextParser(SExprParser)
 
@@ -37,23 +38,30 @@ fes = FE_TextParser(SExprParser)
 
 @show fea("/VOL 10")
 
+# %% [8] markdown
+# ## 测试 / 后端
 
-# 后端测试
+# %% [9] code
 ben = BE_OpenNARS()
 beo = BE_ONA()
 bep = BE_NARS_Python()
 bey = BE_PyNARS()
 bej = BE_OpenJunars()
 
-@show bej([
-    form_cmd(:REM, "这是一段不会被翻译的注释")
-    form_cmd(:NSE, nse"<A --> B>.")
-    form_cmd(:NSE, nse"<B --> C>.")
-    form_cmd(:CYC, 5)
-    form_cmd(:UNK, 5, Operator, Int, :a123, r"123", nse"<A --> B>.")
-])
+for be in [ben, beo, bep, bey, bej]
+    @info be be([
+        NAVM.CMD_REM("这是一段不会被翻译的注释")
+        NAVM.CMD_NSE(nse"<A --> B>.")
+        NAVM.CMD_NSE(nse"<B --> C>.")
+        NAVM.CMD_CYC(5)
+        # NAVM.CMD_UNK(5, Operator, Int, :a123, r"123", nse"<A --> B>.")
+    ])
+end
 
-# 前后端连接测试
+# %% [10] markdown
+# # 测试 / 前后端协同
+
+# %% [11] code
 chain_f::Function = chain(fea, bej)
 @show chain_f
 @show chain_f([
@@ -88,3 +96,8 @@ for be in [ben, beo, bep, bey, bej]
         "\n"
     ) |> println
 end
+
+# %% [12] markdown
+# ## 尝试自编译
+
+

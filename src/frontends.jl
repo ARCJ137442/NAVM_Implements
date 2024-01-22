@@ -3,4 +3,5 @@
 =#
 
 # 导入
+include("frontend/common.jl")
 include("frontend/text_parser.jl")

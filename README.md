@@ -56,4 +56,5 @@ Pkg.add(url="https://github.com/ARCJ137442/NAVM_Implements.jl")
 
 - [JuNarsese](https://github.com/ARCJ137442/JuNarsese.jl)
 - [JuNarsese-Parsers](https://github.com/ARCJ137442/JuNarseseParsers.jl)
+- [PikaParser](https://github.com/LCSB-BioCore/PikaParser.jl)
 - [NAVM](https://github.com/ARCJ137442/NAVM.jl)

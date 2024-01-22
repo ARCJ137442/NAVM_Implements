@@ -10,14 +10,14 @@ struct BE_ONA <: BE_CommonCIN end
 
 begin "方法实现"
 
-    "实现ONA的Narsese输入" # 📌ONA
-    @nair_rule NSE(::BE_ONA, narsese::TNarsese) narsese2data(StringParser_ascii, narsese)
+    "实现ONA的Narsese输入: CommonNarsese" # TODO: 后续需要对「真值括号」进行特化
+    transform(::BE_ONA, cmd::CMD_NSE) = [narsese2data(StringParser_ascii, cmd.narsese)]
 
     "实现ONA的推理步进指令"
-    @nair_rule CYC(::BE_ONA, n::Integer) string(n)
+    transform(::BE_ONA, cmd::CMD_CYC) = [string(cmd.cycles)]
 
     "实现ONA的音量调节"
-    @nair_rule VOL(::BE_ONA, n::Integer) ["*volume=$n"]
+    transform(::BE_ONA, cmd::CMD_VOL) = ["*volume=$(cmd.volume)"]
 
     # # 参考自`InputChannel.py`
     # "实现ONA的信息打印"
@@ -31,12 +31,12 @@ begin "方法实现"
     # end
 
     "实现ONA的记忆存储" # 参见`NAR_language.py`
-    @nair_rule SAV(::BE_ONA, object::AbstractString, path::AbstractString="") "*save"
+    transform(::BE_ONA, ::CMD_SAV) = ["*save"]
 
     "实现ONA的记忆读取" # 参见`NAR_language.py`
-    @nair_rule LOA(::BE_ONA, object::AbstractString, path::AbstractString="") "*load"
+    transform(::BE_ONA, ::CMD_LOA) = ["*load"]
 
     "实现ONA的记忆清除" # 参见`NAR_language.py`
-    @nair_rule RES(::BE_ONA, object::AbstractString, path::AbstractString="") "*reset"
+    transform(::BE_ONA, ::CMD_RES) = ["*reset"]
 
 end

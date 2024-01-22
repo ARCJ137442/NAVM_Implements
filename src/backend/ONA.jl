@@ -10,7 +10,7 @@ struct BE_ONA <: BE_CommonCIN end
 
 begin "方法实现"
 
-    "实现ONA的Narsese输入: CommonNarsese" # TODO: 后续需要对「真值括号」进行特化
+    "实现ONA的Narsese输入: CommonNarsese" # !【2024-01-22 19:39:58】ONA虽使用「{}」表示真值，但仍支持CommonNarsese
     transform(::BE_ONA, cmd::CMD_NSE) = [narsese2data(StringParser_ascii, cmd.narsese)]
 
     "实现ONA的推理步进指令"
